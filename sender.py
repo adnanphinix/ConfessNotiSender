@@ -78,11 +78,12 @@ class ServerFunctions:
             else:
                 print(f"Notification sent to {token}")
 
+server = ServerFunctions()
+
 # ========== API Route ==========
 @app.post("/notify")
 def send_notification(data: UserData):
     try:
-        server = ServerFunctions()
         other_tokens = server.get_other_tokens(data.email)
         if not other_tokens:
             raise HTTPException(status_code=404, detail="No active tokens found")
