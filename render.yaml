@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: noti_server
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn sender:app --host 0.0.0.0 --port 10000
+    envVars:
+      - key: FIREBASE_CREDENTIALS
+        value: '{{ FIREBASE_CREDENTIALS_JSON }}'
