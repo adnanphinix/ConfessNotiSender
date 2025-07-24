@@ -1,4 +1,6 @@
-from fastapi import FastAPI, Request, BackgroundTasks, Query, Header, Depends
+from fastapi import FastAPI, Request, BackgroundTasks, Query, Header, Depends, HTTPException
+from fastapi.responses import JSONResponse
+from fastapi.concurrency import run_in_threadpool
 from pydantic import BaseModel
 import firebase_admin
 from firebase_admin import credentials, firestore
@@ -10,8 +12,17 @@ import json
 import requests
 import threading
 import time
+import psutil
+import uuid
+import multiprocessing
 
+# Initialize FastAPI app
 app = FastAPI()
+
+# Track uptime
+startTime = time.time()
+process = psutil.Process(os.getpid())
+serverId = str(uuid.uuid4())
 
 # ========= Request Model =========
 class UserData(BaseModel):
@@ -140,6 +151,7 @@ def ping_self():
 
 threading.Thread(target=ping_self, daemon=True).start()
 
+# ========= Health Check Helpers =========
 async def cors_health_preflight(
     request: Request,
     origin: str = Header(default="*"),
@@ -183,24 +195,22 @@ def collect_health_data():
         "active": True
     }
 
+# ========= Health Route =========
 @app.api_route("/health", methods=["GET", "OPTIONS"])
 async def get_health_route(
     request: Request,
     cors_response=Depends(cors_health_preflight)
 ):
-    # Handle preflight CORS
     if request.method == "OPTIONS":
         return cors_response
 
-    # Validate API key
     api_key = request.headers.get("x-api-key")
-    if not validate.validate(api_key):
+    if not api_validator.validate(api_key):
         return JSONResponse(
             status_code=401,
             content={"message": False, "error": "Invalid API key"}
         )
 
-    # Collect and return health stats
     health_data = await run_in_threadpool(collect_health_data)
 
     return JSONResponse(
@@ -209,6 +219,6 @@ async def get_health_route(
         headers={
             "X-Server-ID": serverId,
             "X-Response-Time": str(round(time.time(), 2)),
-            "Access-Control-Allow-Origin": "*",  # for GET response
+            "Access-Control-Allow-Origin": "*",
         }
     )
