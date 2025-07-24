@@ -1,23 +1,41 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, Request, HTTPException
 from pydantic import BaseModel
 import firebase_admin
 from firebase_admin import credentials, firestore
 from google.oauth2 import service_account
-from google.auth.transport.requests import Request
+from google.auth.transport.requests import Request as GRequest
+import hashlib
 import os
 import json
 import requests
+import threading
+import time
 
 app = FastAPI()
 
-# ======== Pydantic Model for Request =========
+# ========= Request Model =========
 class UserData(BaseModel):
     email: str
     aliasName: str
 
-# ========== Server Class ==========
-class ServerFunctions:
+# ========= API Key Validator =========
+class ApiValidator:
+    def __init__(self):
+        self.apiKey = os.environ["API_KEY"]
 
+    def validate(self, client_key: str) -> bool:
+        if not client_key:
+            print("API key not found in request")
+            return False
+        
+        match_key = hashlib.sha256(client_key.encode()).hexdigest()
+        if match_key != self.apiKey:
+            print("API_KEY not matched")
+            return False
+        return True
+
+# ========= Server Logic =========
+class ServerFunctions:
     def __init__(self):
         try:
             if not firebase_admin._apps:
@@ -30,15 +48,14 @@ class ServerFunctions:
             self.SCOPES = ["https://www.googleapis.com/auth/firebase.messaging"]
             self.url = f"https://fcm.googleapis.com/v1/projects/{self.projectId}/messages:send"
 
-            # OAuth2 token
             credentials_obj = service_account.Credentials.from_service_account_info(
                 self.cred_json, scopes=self.SCOPES
             )
-            credentials_obj.refresh(Request())
+            credentials_obj.refresh(GRequest())
             self.access_token = credentials_obj.token
 
         except Exception as e:
-            print("Initialization error:", e)
+            print("Firebase Initialization Error:", e)
             raise e
 
     def get_other_tokens(self, exclude_email):
@@ -72,29 +89,51 @@ class ServerFunctions:
             }
 
             response = requests.post(self.url, headers=headers, json=payload)
-
             if response.status_code != 200:
                 print(f"Failed to send to {token}: {response.text}")
             else:
                 print(f"Notification sent to {token}")
 
-server = ServerFunctions()
-
-# ========== API Route ==========
+# ========= Notification Endpoint =========
 @app.post("/notify")
-def send_notification(data: UserData):
+def send_notification(request: Request, data: UserData):
+    api_validator = ApiValidator()
+    client_key = request.headers.get("x-api-key")
+
+    if not api_validator.validate(client_key):
+        raise HTTPException(status_code=401, detail="Invalid API Key")
+
     try:
+        server = ServerFunctions()
         other_tokens = server.get_other_tokens(data.email)
         if not other_tokens:
             raise HTTPException(status_code=404, detail="No active tokens found")
-        
+
         server.send_fcm_notification(
             tokens=other_tokens,
-            title="There is a new post",
-            body=f"{data.aliasName} has posted something",
+            title="New ConfessBot Alert",
+            body=f"{data.aliasName} has something to say!",
             data={"aliasName": data.aliasName}
         )
         return {"message": "Notifications sent!"}
     except Exception as e:
         print("Error:", e)
         raise HTTPException(status_code=500, detail="Internal server error")
+
+# ========= Dummy Ping Route =========
+@app.get("/ping")
+def ping():
+    return {"status": "Server is active"}
+
+# ========= Self-Pinger Thread =========
+def ping_self():
+    while True:
+        try:
+            url = os.environ.get("SELF_URL", "https://notification-server-kqga.onrender.com/ping")
+            res = requests.get(url)
+            print(f"[Ping] Status: {res.status_code}")
+        except Exception as e:
+            print("[Ping Error]:", e)
+        time.sleep(120)  # every 2 mins
+
+threading.Thread(target=ping_self, daemon=True).start()
