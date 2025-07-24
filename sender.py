@@ -59,15 +59,16 @@ class ServerFunctions:
             self.SCOPES = ["https://www.googleapis.com/auth/firebase.messaging"]
             self.url = f"https://fcm.googleapis.com/v1/projects/{self.projectId}/messages:send"
 
-            credentials_obj = service_account.Credentials.from_service_account_info(
-                self.cred_json, scopes=self.SCOPES
-            )
-            credentials_obj.refresh(GRequest())
-            self.access_token = credentials_obj.token
-
         except Exception as e:
             print("Firebase Initialization Error:", e)
             raise e
+
+    def token(self):
+        credentials_obj = service_account.Credentials.from_service_account_info(
+                self.cred_json, scopes=self.SCOPES
+            )
+        credentials_obj.refresh(GRequest())
+        self.access_token = credentials_obj.token
 
     def get_other_tokens(self, exclude_email):
         tokens = []
@@ -112,8 +113,8 @@ server = ServerFunctions()
 # ========= Notification Endpoint =========
 @app.post("/notify")
 def send_notification(request: Request, data: UserData):
+    server.token()
     client_key = request.headers.get("x-api-key")
-
     if not api_validator.validate(client_key):
         raise HTTPException(status_code=401, detail="Invalid API Key")
 
