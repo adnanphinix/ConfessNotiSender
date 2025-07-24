@@ -94,17 +94,19 @@ class ServerFunctions:
             else:
                 print(f"Notification sent to {token}")
 
+
+api_validator = ApiValidator()
+server = ServerFunctions()
+
 # ========= Notification Endpoint =========
 @app.post("/notify")
 def send_notification(request: Request, data: UserData):
-    api_validator = ApiValidator()
     client_key = request.headers.get("x-api-key")
 
     if not api_validator.validate(client_key):
         raise HTTPException(status_code=401, detail="Invalid API Key")
 
     try:
-        server = ServerFunctions()
         other_tokens = server.get_other_tokens(data.email)
         if not other_tokens:
             raise HTTPException(status_code=404, detail="No active tokens found")
