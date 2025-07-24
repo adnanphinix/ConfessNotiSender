@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request, HTTPException, Header
 from pydantic import BaseModel
 import firebase_admin
 from firebase_admin import credentials, firestore
