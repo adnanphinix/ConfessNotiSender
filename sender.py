@@ -31,6 +31,73 @@ class UserData(BaseModel):
     email: str
     aliasName: str
 
+notification_sets = [
+    {
+        "time": "morning",
+        "range": ("06:00", "10:00"),
+        "messages": [
+            "A new day, a new chance to feel lighter. Let it out.",
+            "What’s on your mind this morning? Share it anonymously.",
+            "Starting your day with a clear heart makes it easier. Vent here.",
+            "Good morning! Your feelings matter—say them out loud.",
+            "Coffee helps. So does unburdening your thoughts.",
+            "Begin your day with honesty—to yourself.",
+            "Today, give your heart a moment of peace. Express yourself.",
+            "Before the world begins, take a moment to check in with yourself.",
+            "No pressure. Just thoughts you don’t have to carry alone.",
+            "Still thinking about yesterday? Let it go here, safely."
+        ]
+    },
+    {
+        "time": "afternoon",
+        "range": ("12:00", "16:00"),
+        "messages": [
+            "Midday stress? Take a 1-minute pause. Share what’s bothering you.",
+            "Lunchtime thoughts can be the heaviest. Want to vent?",
+            "Between meetings, tasks, and people—don't forget to breathe.",
+            "What are you holding back today? This space is still yours.",
+            "You’re halfway through. A short confession can help ease the rest.",
+            "Tough day? Say what’s on your mind anonymously.",
+            "Worried or anxious? Even a few words can lighten the load.",
+            "Someone else just posted how they feel. Maybe you can too.",
+            "Break the loop of overthinking. Vent anonymously.",
+            "You don’t have to carry your emotions until bedtime."
+        ]
+    },
+    {
+        "time": "evening",
+        "range": ("18:00", "22:00"),
+        "messages": [
+            "Evenings are for release. What’s been weighing on you?",
+            "Still carrying the day’s weight? Let it go, one post at a time.",
+            "Confessions are welcome here—no judgment.",
+            "What would you say if no one knew it was you? Say it here.",
+            "You made it through the day. Ready to express the rest?",
+            "Nothing is too small or too dark. Let it out anonymously.",
+            "A long day deserves a short moment of emotional clarity.",
+            "Speak your truth. Even if it’s raw. Even if it hurts.",
+            "What would you whisper to a friend at midnight? Whisper it here.",
+            "It’s safe here. Share something and make your heart lighter."
+        ]
+    },
+    {
+        "time": "night",
+        "range": ("22:00", "02:00"),
+        "messages": [
+            "Can’t sleep? Maybe it’s time to unload a little.",
+            "Your midnight thoughts matter. Let them out anonymously.",
+            "This space doesn’t close. It’s always open to your feelings.",
+            "Some thoughts don’t need to be kept in. You can write them here.",
+            "It’s quiet now. The perfect time to reflect—and release.",
+            "The night feels heavier with secrets. You can leave them here.",
+            "Sometimes you don’t need advice. Just a space to be heard.",
+            "Let your words rest here so your mind can rest too.",
+            "Late-night emotions hit hard. Write them down, feel a little lighter.",
+            "You’re not alone—not even at 2 AM."
+        ]
+    }
+]
+
 # ========= API Key Validator =========
 class ApiValidator:
     def __init__(self):
