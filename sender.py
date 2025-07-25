@@ -235,7 +235,7 @@ def send_notification(request: Request, data: UserData):
 
         server.send_fcm_notification(
             tokens=other_tokens,
-            title="{data.aliasName} has posted",
+            title=f"{data.aliasName} has posted",
             body=f"There is a confession posted by {data.aliasName} check it out.",
             data={"aliasName": data.aliasName}
         )
