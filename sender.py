@@ -15,6 +15,8 @@ import time
 import psutil
 import uuid
 import multiprocessing
+import random
+from datetime import datetime
 
 # Initialize FastAPI app
 app = FastAPI()
@@ -110,6 +112,47 @@ class ServerFunctions:
 api_validator = ApiValidator()
 server = ServerFunctions()
 
+def get_current_period():
+    now = datetime.now().strftime("%H:%M")
+
+    for block in notification_sets:
+        start, end = block["range"]
+        if start < end:
+            if start <= now <= end:
+                return block
+        else:
+            # Handles 22:00 - 02:00 (overnight)
+            if now >= start or now <= end:
+                return block
+    return None
+
+def send_random_time_notification():
+    while True:
+        try:
+            block = get_current_period()
+            if not block:
+                time.sleep(300)
+                continue
+
+            message = random.choice(block["messages"])
+            title = "Feeling something?"
+            body = message
+
+            server.token()
+            active_tokens = server.get_other_tokens(exclude_email=None)
+            if active_tokens:
+                server.send_fcm_notification(tokens=active_tokens, title=title, body=body)
+                print(f"[AutoNotify] Sent '{body}' to {len(active_tokens)} users.")
+            else:
+                print("[AutoNotify] No active tokens found.")
+
+        except Exception as e:
+            print("[AutoNotify Error]:", e)
+
+        time.sleep(10800)
+
+threading.Thread(target=send_random_time_notification, daemon=True).start()
+
 # ========= Notification Endpoint =========
 @app.post("/notify")
 def send_notification(request: Request, data: UserData):
@@ -125,8 +168,8 @@ def send_notification(request: Request, data: UserData):
 
         server.send_fcm_notification(
             tokens=other_tokens,
-            title="New ConfessBot Alert",
-            body=f"{data.aliasName} has something to say!",
+            title="{data.aliasName} has posted",
+            body=f"There is a confession posted by {data.aliasName} check it out.",
             data={"aliasName": data.aliasName}
         )
         return {"message": "Notifications sent!"}
