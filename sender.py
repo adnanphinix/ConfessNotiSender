@@ -17,7 +17,6 @@ import uuid
 import multiprocessing
 import random
 from datetime import datetime
-from ConfessBots import BotSender
 
 # Initialize FastAPI app
 app = FastAPI()
