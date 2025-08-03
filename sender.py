@@ -17,9 +17,11 @@ import uuid
 import multiprocessing
 import random
 from datetime import datetime
+from ConfessBots import BotSender
 
 # Initialize FastAPI app
 app = FastAPI()
+botServer = BotSender()
 
 # Track uptime
 startTime = time.time()
@@ -118,6 +120,7 @@ class ApiValidator:
 class ServerFunctions:
     def __init__(self):
         try:
+            threading.Thread(target=botServer.caller(), daemon=True).start()
             if not firebase_admin._apps:
                 self.cred_json = json.loads(os.environ["CREDS"])
                 creds = credentials.Certificate(self.cred_json)
