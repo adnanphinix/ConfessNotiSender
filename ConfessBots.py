@@ -64,7 +64,7 @@ class BotSender:
             15.Kisi ko hurt kiya unintentionally aur uska guilt
 
             Restrictions & Style Guide:
-            1.Confession sirf Hinglish aur English ka natural mix hona chahiye — jaise log Instagram DMs, Reddit ya WhatsApp pe likhte hain.
+            1.Confession sirf Hinglish ka hona chahiye — jaise log Instagram DMs, Reddit ya WhatsApp pe likhte hain.
             2.Pure Hindi ya pure English nahi likhna — dono ka casual aur relatable blend hona chahiye.
             3.No names or personal identifiers.
             4.Post mein relevant emojis ka use zarur karo jaise 😢, 💔, 😤, 🥺, ❤️‍🩹, 😞, 😔 etc. to show emotions — lekin overuse mat karna.
