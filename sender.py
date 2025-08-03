@@ -179,7 +179,6 @@ class ServerFunctions:
 
 api_validator = ApiValidator()
 server = ServerFunctions()
-botServer = BotSender()
 
 def get_current_period():
     now = datetime.now().strftime("%H:%M")
@@ -335,5 +334,3 @@ async def get_health_route(
             "Access-Control-Allow-Origin": "*",
         }
     )
-
-threading.Thread(target=botServer.caller(), daemon=True).start()
