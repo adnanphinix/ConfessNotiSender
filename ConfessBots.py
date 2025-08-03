@@ -38,7 +38,7 @@ class BotSender:
 
     def post_generator(self, key: str) -> str:
         genai.configure(api_key=key)
-        model = genai.GenerativeModel("gemini-1.5-flash")  # Adjust if you're using another version
+        model = genai.GenerativeModel("gemini-2.0-flash")  # Adjust if you're using another version
         prompt = """
             Tum ek insaan ho jo ek anonymous confession app (jaise NotMyType, Whisper, Reddit, NGL) par apne dil ki baat likh raha hai.
 
