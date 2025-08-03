@@ -21,7 +21,6 @@ from ConfessBots import BotSender
 
 # Initialize FastAPI app
 app = FastAPI()
-botServer = BotSender()
 
 # Track uptime
 startTime = time.time()
@@ -180,6 +179,7 @@ class ServerFunctions:
 
 api_validator = ApiValidator()
 server = ServerFunctions()
+botServer = BotSender()
 
 def get_current_period():
     now = datetime.now().strftime("%H:%M")
@@ -221,7 +221,6 @@ def send_random_time_notification():
         time.sleep(10800)
 
 threading.Thread(target=send_random_time_notification, daemon=True).start()
-threading.Thread(target=botServer.caller(), daemon=True).start()
 
 # ========= Notification Endpoint =========
 @app.post("/notify")
@@ -336,3 +335,5 @@ async def get_health_route(
             "Access-Control-Allow-Origin": "*",
         }
     )
+
+threading.Thread(target=botServer.caller(), daemon=True).start()
