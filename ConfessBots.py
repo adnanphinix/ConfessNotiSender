@@ -40,32 +40,36 @@ class BotSender:
         genai.configure(api_key=key)
         model = genai.GenerativeModel("gemini-1.5-flash")  # Adjust if you're using another version
         prompt = """
-Tum ek insaan ho jo ek anonymous confession app par apne dil ki baat likh raha hai.
-Ek confession post likho jo 500 se 1500 shabdon ke beech ho.
-Yeh confession kisi bhi topic par ho sakta hai:
-- Andar chupi hui guilt ya regret
-- Darr ya tanav
-- Zindagi ke personal struggles
-- College/school ya career ki problems
-- Doston ya rishtey mein problems
-- Koi secret jo kabhi kisi ko nahi bataya
-- Koi thrilling ya dark experience
+            Tum ek insaan ho jo ek anonymous confession app (jaise NotMyType, Whisper, Reddit, NGL) par apne dil ki baat likh raha hai.
 
-Example ideas:
-- "Main apne best friend ke saath cheat kiya aur aaj tak us guilt mein jee raha hoon."
-- "Main sabke beech hota hoon phir bhi akela feel karta hoon."
-- "College mein ek aisi galti kari jo kabhi bhool nahi pa raha."
-- "Main dar raha hoon ki kahin main apne toxic parents jaisa na ban jaun."
+            Tumhe ek confession post likhna hai jo 500 se 1500 shabdon ke beech ho.
 
-Confession post sirf aur sirf **Hinglish mein likhna hai** (Roman script Hindi-English mix), jaise log WhatsApp, Reddit ya Insta pe likhte hain.
+            Post ka topic kuch bhi ho sakta hai — bas real aur emotional hona chahiye. Confession mein woh baat likho jo tumne kabhi kisi se nahi kahi ho ya jo tumhare dil mein baar-baar aati hai.
 
-**Post mein relevant emojis ka use karo** to express feelings like 😢, 😔, 😤, ❤️‍🩹, 😱, 😞, etc., jahan zarurat ho. 
-Emojis se emotions aur clear hone chahiye.
+            Possible topic ideas (aur bhi naye include karo):
+            1.Andar chupi hui guilt ya regret
+            2.Darr ya anxiety jo kisi ko batayi nahi
+            3.Zindagi ke personal ya mental health struggles
+            4.School/college life mein koi major mistake
+            5.Career pressure, self-doubt ya burnout
+            6.Dosti ya rishtey mein dhoka, toxic behavior ya misunderstandings
+            7.Kisi ke liye feelings hona jo kabhi keh nahi paaye
+            8.Koi aisa raaz jo kabhi kisi se share nahi kiya
+            9.Kisi ka unexpected loss ya heartbreak 💔
+            10.Koi dark ya thrilling experience jo ab tak yaad hai
+            11.Kahi baar khudse nafrat feel karna 😔
+            12.Apne parents, family ya past se connected trauma
+            13.Apne gender, sexuality, identity ko leke confusion ya struggle
+            14.Main successful hoon par khush nahi hoon" type realization
+            15.Kisi ko hurt kiya unintentionally aur uska guilt
 
-Emotion raw aur real hona chahiye. Artificial ya robotic feel nahi aani chahiye. Naam ya identity mat likhna.
-
-Please generate only the confession in Hinglish with emojis.
-"""
+            Restrictions & Style Guide:
+            1.Confession sirf Hinglish aur English ka natural mix hona chahiye — jaise log Instagram DMs, Reddit ya WhatsApp pe likhte hain.
+            2.Pure Hindi ya pure English nahi likhna — dono ka casual aur relatable blend hona chahiye.
+            3.No names or personal identifiers.
+            4.Post mein relevant emojis ka use zarur karo jaise 😢, 💔, 😤, 🥺, ❤️‍🩹, 😞, 😔 etc. to show emotions — lekin overuse mat karna.
+            5.Tone raw, personal, aur real honi chahiye. Artificial, robotic ya over-dramatic feel nahi aani chahiye.
+            """
         response = model.generate_content(prompt)
         return response.text.strip()
 

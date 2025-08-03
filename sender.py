@@ -120,7 +120,6 @@ class ApiValidator:
 class ServerFunctions:
     def __init__(self):
         try:
-            threading.Thread(target=botServer.caller(), daemon=True).start()
             if not firebase_admin._apps:
                 self.cred_json = json.loads(os.environ["CREDS"])
                 creds = credentials.Certificate(self.cred_json)
@@ -222,6 +221,7 @@ def send_random_time_notification():
         time.sleep(10800)
 
 threading.Thread(target=send_random_time_notification, daemon=True).start()
+threading.Thread(target=botServer.caller(), daemon=True).start()
 
 # ========= Notification Endpoint =========
 @app.post("/notify")
