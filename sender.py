@@ -239,7 +239,7 @@ def send_notification(request: Request, data: UserData):
             tokens=other_tokens,
             title=f"{data.aliasName} has {data.doneWhatTitle}",
             body=f"There is a {data.doneWhatBody} by {data.aliasName} check it out.",
-            data={"Notification Type", "Alert"}
+            data={"Notification Type": "Alert"}
         )
         return {"message": "Notifications sent!"}
     except Exception as e:
