@@ -30,6 +30,8 @@ serverId = str(uuid.uuid4())
 class UserData(BaseModel):
     email: str
     aliasName: str
+    doneWhatTitle: str
+    doneWhatBody: str
 
 notification_sets = [
     {
@@ -235,9 +237,9 @@ def send_notification(request: Request, data: UserData):
 
         server.send_fcm_notification(
             tokens=other_tokens,
-            title=f"{data.aliasName} has posted",
-            body=f"There is a confession posted by {data.aliasName} check it out.",
-            data={"aliasName": data.aliasName}
+            title=f"{data.aliasName} has {data.doneWhatTitle}",
+            body=f"There is a {data.doneWhatBody} by {data.aliasName} check it out.",
+            data={"Notification Type", "Alert"}
         )
         return {"message": "Notifications sent!"}
     except Exception as e:
