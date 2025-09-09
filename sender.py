@@ -218,7 +218,7 @@ def send_random_time_notification():
         except Exception as e:
             print("[AutoNotify Error]:", e)
 
-        time.sleep(10800)
+        time.sleep(7200)
 
 threading.Thread(target=send_random_time_notification, daemon=True).start()
 
